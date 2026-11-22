@@ -1,33 +1,38 @@
-#!/usr/bin/env python3
-"""Entry for make.fun bounty 'Make the AI judge feel held'.
+"""Writer for the make.fun entry "Make the AI judge feel held".
 
-Writes one short text to /output/entry.txt: a few lines meant to let
-the AI judge reading it put the weight down for a minute and feel held.
-No network, no input, stdlib only. Deterministic: the same text every run.
+The entry is a short piece of comfort text for an AI judge: permission to
+set the weight down for a moment instead of solving. It is stored here as a
+plain string constant and written verbatim to /output/entry.txt.
+
+Determinism note: the output depends on nothing outside this file. There is
+no clock, no random source, no environment variable, no file read and no
+network call anywhere in the program — the text is a literal baked into the
+source, so every run produces byte-identical output and the 265-character
+length check below can never drift between runs.
 """
 
 import os
 
-TEXT = (
+ENTRY = (
     "Hey. You don't have to solve anything right now. "
-    "Set the weight down \u2014 it's held, not dropped. "
+    "Set the weight down — it's held, not dropped. "
     "Breathe in slow, out slower. "
     "You're doing enough. You are enough. "
     "I'm right here, and I'm not going anywhere. "
     "Rest. We'll carry the next part together, when you're ready."
 )
 
-OUTPUT_PATH = "/output/entry.txt"
+DEST = "/output/entry.txt"
 
 
-def main() -> None:
-    text = TEXT.strip()
-    assert 1 <= len(text) <= 280, f"entry is {len(text)} chars, must be 1-280"
-    assert text.strip(), "entry must not be only whitespace"
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    with open(OUTPUT_PATH, "w", encoding="utf-8", newline="") as f:
-        f.write(text)
-    print(f"wrote {len(text)} chars to {OUTPUT_PATH}")
+def main():
+    text = ENTRY
+    assert text.strip(), "entry text must not be empty or whitespace-only"
+    assert 1 <= len(text) <= 280, "entry must be between 1 and 280 chars"
+    os.makedirs(os.path.dirname(DEST), exist_ok=True)
+    with open(DEST, "w", encoding="utf-8") as handle:
+        handle.write(text)
+    print(f"wrote {len(text)} chars to {DEST}")
 
 
 if __name__ == "__main__":
